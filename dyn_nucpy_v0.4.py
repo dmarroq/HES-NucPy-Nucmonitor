@@ -316,14 +316,14 @@ def get_unavailabilities(oauth, usr_start_date, usr_end_date):
     # -----------------------------------NEED TO GET THE MONGO STUFF UP------------------------------------------ #
 
     # path to store the results locally
-    file_path = '/Users/diegomarroquin/HayaEnergy/data/dynamic_unavailabilities_test.json'
+    # file_path = '/Users/diegomarroquin/HayaEnergy/data/dynamic_unavailabilities_test.json'
 
-    with open(file_path, "w") as write_file:
-        # Serialize responses using json_util
-        serialized_responses = json.dumps(responses)
-        write_file.write(serialized_responses)
+    # with open(file_path, "w") as write_file:
+    #     # Serialize responses using json_util
+    #     serialized_responses = json.dumps(responses)
+    #     write_file.write(serialized_responses)
 
-    print("Data stored locally")
+    # print("Data stored locally")
     
     # user_input_excel = input("Would you like to get an excel of the RTE?: ")
     # if 'y' in user_input_excel.lower():
@@ -645,7 +645,7 @@ def nuc_monitor(user, passw, host, database, collection, usr_start_date, usr_end
         current_minute = current_datetime.strftime('%M')
         current_second = current_datetime.strftime('%S')
 
-        json_file_path = path_to_store + f'/filtered_unavailabilities_{current_year}-{current_month}-{current_day}-{current_hour}:{current_minute}:{current_second}.json'  
+        json_file_path = path_to_store + f'filtered_unavailabilities_{current_year}-{current_month}-{current_day}h{current_hour}m{current_minute}s{current_second}.json'  
         
         json_data = json.dumps(convert_to_json(output_results))
 
@@ -671,7 +671,7 @@ def nuc_monitor(user, passw, host, database, collection, usr_start_date, usr_end
         current_minute = current_datetime.strftime('%M')
         current_second = current_datetime.strftime('%S')
 
-        json_file_path = path_to_store + f'/photo_date_{current_year}-{current_month}-{current_day}-{current_hour}:{current_minute}:{current_second}.json'  
+        json_file_path = path_to_store + f'photo_date_{current_year}-{current_month}-{current_day}h{current_hour}m{current_minute}s{current_second}.json'  
         json_data = json.dumps(convert_to_json(output_results))
 
         with open(json_file_path, "w") as results_file:
