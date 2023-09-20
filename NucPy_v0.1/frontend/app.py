@@ -613,46 +613,54 @@ def run_app():
 
 
         print(monthly_average_nucmonitor)
-        print(two_months_before, one_month_before, current_date.strftime('%Y-%m'), one_month_after, two_months_after)
-        # Filter DataFrames based on date ranges
-        df_nucmonitor_filtered = monthly_average_nucmonitor[
-            (monthly_average_nucmonitor.index == two_months_before) |
-            (monthly_average_nucmonitor.index == one_month_before) |
-            (monthly_average_nucmonitor.index == current_date.strftime('%Y-%m')) |
-            (monthly_average_nucmonitor.index == one_month_after) |
-            (monthly_average_nucmonitor.index == two_months_after)
-        ]
+        print(monthly_average_nucmonitor.index)
+        print(len(monthly_average_nucmonitor.index) < 5)
+        if len(monthly_average_nucmonitor.index) < 5 or two_months_before not in monthly_average_nucmonitor.index:
+            df_display_normal_bool = False
 
-        df_photo_date_filtered = monthly_average_photo_date[
-            (monthly_average_photo_date.index == two_months_before) |
-            (monthly_average_photo_date.index == one_month_before) |
-            (monthly_average_photo_date.index == current_date.strftime('%Y-%m')) |
-            (monthly_average_photo_date.index == one_month_after) |
-            (monthly_average_photo_date.index == two_months_after)
-        ]
+        else:
+            print(two_months_before, one_month_before, current_date.strftime('%Y-%m'), one_month_after, two_months_after)
+            # Filter DataFrames based on date ranges
+            df_nucmonitor_filtered = monthly_average_nucmonitor[
+                (monthly_average_nucmonitor.index == two_months_before) |
+                (monthly_average_nucmonitor.index == one_month_before) |
+                (monthly_average_nucmonitor.index == current_date.strftime('%Y-%m')) |
+                (monthly_average_nucmonitor.index == one_month_after) |
+                (monthly_average_nucmonitor.index == two_months_after)
+            ]
 
-        # Display the filtered DataFrames
-        st.write(f"Forecast update {current_date_str}")
-        st.write(df_nucmonitor_filtered)
-        st.write(f"Forecast update {past_date_str}")
-        st.write(df_photo_date_filtered)
+            df_photo_date_filtered = monthly_average_photo_date[
+                (monthly_average_photo_date.index == two_months_before) |
+                (monthly_average_photo_date.index == one_month_before) |
+                (monthly_average_photo_date.index == current_date.strftime('%Y-%m')) |
+                (monthly_average_photo_date.index == one_month_after) |
+                (monthly_average_photo_date.index == two_months_after)
+            ]
 
-        current_forecast_update = df_nucmonitor_filtered.tolist()
-        past_forecast_update = df_photo_date_filtered.tolist()
-        delta = [current - past for current, past in zip(current_forecast_update, past_forecast_update)]
+            # Display the filtered DataFrames
+            st.write(f"Forecast update {current_date_str}")
+            st.write(df_nucmonitor_filtered)
+            st.write(f"Forecast update {past_date_str}")
+            st.write(df_photo_date_filtered)
 
-        print('Dates:', [two_months_before, one_month_before, current_date.strftime('%Y-%m'), one_month_after, two_months_after])
-        print(f"Forecast update {current_date_str}", current_forecast_update)
-        print(f"Forecast update {past_date_str}", past_forecast_update,)
-        print('Delta', delta)
+            current_forecast_update = df_nucmonitor_filtered.tolist()
+            past_forecast_update = df_photo_date_filtered.tolist()
+            delta = [current - past for current, past in zip(current_forecast_update, past_forecast_update)]
 
-        # Create a DataFrame for display
-        data_avg_expected_normal = {
-            'Dates': [two_months_before, one_month_before, current_date.strftime('%Y-%m'), one_month_after, two_months_after],
-            f"Forecast update {current_date_str}": current_forecast_update,
-            f"Forecast update {past_date_str}": past_forecast_update,
-            'Delta': delta
-        }
+            print('Dates:', [two_months_before, one_month_before, current_date.strftime('%Y-%m'), one_month_after, two_months_after])
+            print(f"Forecast update {current_date_str}", current_forecast_update)
+            print(f"Forecast update {past_date_str}", past_forecast_update,)
+            print('Delta', delta)
+
+            # Create a DataFrame for display
+            data_avg_expected_normal = {
+                'Dates': [two_months_before, one_month_before, current_date.strftime('%Y-%m'), one_month_after, two_months_after],
+                f"Forecast update {current_date_str}": current_forecast_update,
+                f"Forecast update {past_date_str}": past_forecast_update,
+                'Delta': delta
+            }
+            df_display_normal_bool = True
+
 # --------------------------------- AVERAGE EXPECTED AVAILABILITY M-1 M M+1 M+2 PIPELINE --------------------------------- #
 
 # --------------------------------- AVERAGE EXPECTED AVAILABILITY WINTER PIPELINE --------------------------------- #
@@ -674,47 +682,52 @@ def run_app():
         print("monthly_average_nucmonitor.index", monthly_average_nucmonitor.index)
         print(monthly_average_nucmonitor.index == winter_start)
         print(monthly_average_nucmonitor.index == winter_end)
+        if monthly_average_nucmonitor.index.any() != winter_start or monthly_average_nucmonitor.index.an() != winter_end:
+            df_display_winter_bool = False
 
-        # Filter DataFrames based on winter date range
-        df_nucmonitor_winter = monthly_average_nucmonitor[(monthly_average_nucmonitor.index >= winter_start_str) & (monthly_average_nucmonitor.index <= winter_end_str)]
+        else:
+            # Filter DataFrames based on winter date range
+            df_nucmonitor_winter = monthly_average_nucmonitor[(monthly_average_nucmonitor.index >= winter_start_str) & (monthly_average_nucmonitor.index <= winter_end_str)]
 
-        df_photo_date_winter = monthly_average_photo_date[(monthly_average_photo_date.index >= winter_start_str) & (monthly_average_photo_date.index <= winter_end_str)]
+            df_photo_date_winter = monthly_average_photo_date[(monthly_average_photo_date.index >= winter_start_str) & (monthly_average_photo_date.index <= winter_end_str)]
 
-        # Display the forecast DataFrames for winter
-        st.title("Forecast for Winter Months")
-        st.write(f"Forecast for {current_date.year}-{current_date.year+1} (Nov, Dec, Jan, Feb, Mar)")
-        st.write("Nucmonitor Forecast:")
-        st.write(df_nucmonitor_winter)
-        st.write("Photo Date Forecast:")
-        st.write(df_photo_date_winter)
-        
-        current_winter_forecast_update = df_nucmonitor_winter.tolist()
-        past_winter_forecast_update = df_photo_date_winter.tolist()
-        winter_delta = [current - past for current, past in zip(current_winter_forecast_update, past_winter_forecast_update)]
-        print("current_winter_forecast_update:", current_winter_forecast_update)
-        print("past_winter_forecast_update:", past_winter_forecast_update)
+            # Display the forecast DataFrames for winter
+            st.title("Forecast for Winter Months")
+            st.write(f"Forecast for {current_date.year}-{current_date.year+1} (Nov, Dec, Jan, Feb, Mar)")
+            st.write("Nucmonitor Forecast:")
+            st.write(df_nucmonitor_winter)
+            st.write("Photo Date Forecast:")
+            st.write(df_photo_date_winter)
+            
+            current_winter_forecast_update = df_nucmonitor_winter.tolist()
+            past_winter_forecast_update = df_photo_date_winter.tolist()
+            winter_delta = [current - past for current, past in zip(current_winter_forecast_update, past_winter_forecast_update)]
+            print("current_winter_forecast_update:", current_winter_forecast_update)
+            print("past_winter_forecast_update:", past_winter_forecast_update)
 
-        # Create a DataFrame for display
-        data_avg_expected_winter = {
-            'Dates': [f'Nov-{current_date.year}', f'Dec-{current_date.year}', f'Jan-{current_date.year+1}', f'Feb-{current_date.year+1}', f'Mar-{current_date.year+1}'],
-            f"Forecast update {current_date_str}": current_winter_forecast_update,
-            f"Forecast update {past_date_str}": past_winter_forecast_update,
-            'Delta': winter_delta
-        }
-        print(data_avg_expected_winter)
+            # Create a DataFrame for display
+            data_avg_expected_winter = {
+                'Dates': [f'Nov-{current_date.year}', f'Dec-{current_date.year}', f'Jan-{current_date.year+1}', f'Feb-{current_date.year+1}', f'Mar-{current_date.year+1}'],
+                f"Forecast update {current_date_str}": current_winter_forecast_update,
+                f"Forecast update {past_date_str}": past_winter_forecast_update,
+                'Delta': winter_delta
+            }
+            print(data_avg_expected_winter)
+            df_display_winter_bool = True
+
 # --------------------------------- AVERAGE EXPECTED AVAILABILITY WINTER PIPELINE --------------------------------- #
 
 # --------------------------------- VISUALIZE --------------------------------- #
-
-        df_display_normal = pd.DataFrame(data_avg_expected_normal)
-        df_display_winter = pd.DataFrame(data_avg_expected_winter)
-
-        # Display the DataFrame as a horizontal table
-        st.write("Table 1. Average expected availability on the French nuclear fleet (MW) - M-1, M, M+1, M+2, M+3")
-        st.table(df_display_normal)
-
-        st.write(f"Table 2. Average expected availability on the French nuclear fleet (MW) - Winter {winter_start}/{winter_end}")
-        st.table(df_display_winter)
+        if df_display_normal_bool:
+            df_display_normal = pd.DataFrame(data_avg_expected_normal)
+            # Display the DataFrame as a horizontal table
+            st.write("Table 1. Average expected availability on the French nuclear fleet (MW) - M-1, M, M+1, M+2, M+3")
+            st.table(df_display_normal)
+        
+        if df_display_winter_bool:
+            df_display_winter = pd.DataFrame(data_avg_expected_winter)
+            st.write(f"Table 2. Average expected availability on the French nuclear fleet (MW) - Winter {winter_start}/{winter_end}")
+            st.table(df_display_winter)
 
         # Line charts of the forecasts (need to combine them so they appear in the same chart)
         st.write("Current forecast")
@@ -728,7 +741,8 @@ def run_app():
         real_forecast = df_nucmonitor_2.loc[df_nucmonitor_2.index <= current_date_str]
 
         # Winter forecast still not the correct one, this is just a placeholder
-        winter_forecast = df_nucmonitor_2.loc[(df_nucmonitor_2.index >= winter_start_date) & (df_nucmonitor_2.index <= winter_end_date)]
+        # winter_forecast = df_nucmonitor_2.loc[(df_nucmonitor_2.index >= winter_start_date) & (df_nucmonitor_2.index <= winter_end_date)]
+        
         # Optionally, if you want to reset the index
         # real_forecast = real_forecast.reset_index()
         print(real_forecast)
@@ -736,8 +750,11 @@ def run_app():
         st.line_chart(real_forecast)
 
         # Combine dataframes
-        combined_df = pd.concat([df_nucmonitor_2, df_photo_date_2, real_forecast, winter_forecast], axis=1)
-        combined_df.columns = [f'Forecast {current_date_str}', f'Forecast {past_date_str}', 'Real Forecast', f'Winter forecast {winter_start}/{winter_end}']
+        # combined_df = pd.concat([df_nucmonitor_2, df_photo_date_2, real_forecast, winter_forecast], axis=1)
+        combined_df = pd.concat([df_nucmonitor_2, df_photo_date_2, real_forecast], axis=1)
+
+        # combined_df.columns = [f'Forecast {current_date_str}', f'Forecast {past_date_str}', 'Real Forecast', f'Winter forecast {winter_start}/{winter_end}']
+        combined_df.columns = [f'Forecast {current_date_str}', f'Forecast {past_date_str}', 'Real Forecast']
 
         print(combined_df)
         st.write(f"Graph 1. {start_date} to {end_date}")
