@@ -533,6 +533,8 @@ def run_app():
     start_date = st.date_input("Start Date")
     end_date = st.date_input("End Date")
     past_date = st.date_input("Cutoff Date")
+    # winter_date = st.date_input("Winter Cutoff Date")
+
     current_date = datetime.datetime.now()
 
     with st.form("nucmonitor_form"):
@@ -545,6 +547,7 @@ def run_app():
         st.write("Data received from Flask:")
         df_nucmonitor = get_nucmonitor_data(start_date, end_date, current_date)
         df_photo_date = get_nucmonitor_data(start_date, end_date, past_date)
+        # df_winter_date = get_nucmonitor_data(start_date, end_date, winter_date)
         current_date_str = str(current_date.strftime('%Y-%m-%d'))
         past_date_str = str(past_date.strftime('%Y-%m-%d'))
         st.write("Nucmonitor")
@@ -663,14 +666,18 @@ def run_app():
         winter_start_date = current_date.replace(month=11, day=1)
         winter_end_date = (current_date.replace(year=current_date.year+1, month=3, day=31))
         winter_start = f"{current_date.year}-11"
-        winter_end = f"{current_date.year+1}-3"
+        winter_end = f"{current_date.year+1}-03"
         winter_start_str = str(winter_start)
         winter_end_str = str(winter_end)
-        print("winter_start_str", winter_start_str)
-        print("winter_end_str", winter_end_str)
-        print(monthly_average_nucmonitor.index)
+        print("winter_start_str", winter_start)
+        print("winter_end_str", winter_end)
+        print("monthly_average_nucmonitor.index", monthly_average_nucmonitor.index)
+        print(monthly_average_nucmonitor.index == winter_start)
+        print(monthly_average_nucmonitor.index == winter_end)
+
         # Filter DataFrames based on winter date range
         df_nucmonitor_winter = monthly_average_nucmonitor[(monthly_average_nucmonitor.index >= winter_start_str) & (monthly_average_nucmonitor.index <= winter_end_str)]
+
         df_photo_date_winter = monthly_average_photo_date[(monthly_average_photo_date.index >= winter_start_str) & (monthly_average_photo_date.index <= winter_end_str)]
 
         # Display the forecast DataFrames for winter
@@ -684,10 +691,9 @@ def run_app():
         current_winter_forecast_update = df_nucmonitor_winter.tolist()
         past_winter_forecast_update = df_photo_date_winter.tolist()
         winter_delta = [current - past for current, past in zip(current_winter_forecast_update, past_winter_forecast_update)]
-        print("Dates:", [f'Nov-{current_date.year}', f'Dec-{current_date.year}', f'Jan-{current_date.year+1}', f'Feb-{current_date.year+1}', f'Mar-{current_date.year+1}'])
-        print(f"Forecast update {current_date_str}:", current_winter_forecast_update)
-        print(f"Forecast update {past_date_str}:", past_winter_forecast_update)
-        print('Delta:', winter_delta)
+        print("current_winter_forecast_update:", current_winter_forecast_update)
+        print("past_winter_forecast_update:", past_winter_forecast_update)
+
         # Create a DataFrame for display
         data_avg_expected_winter = {
             'Dates': [f'Nov-{current_date.year}', f'Dec-{current_date.year}', f'Jan-{current_date.year+1}', f'Feb-{current_date.year+1}', f'Mar-{current_date.year+1}'],
@@ -695,7 +701,7 @@ def run_app():
             f"Forecast update {past_date_str}": past_winter_forecast_update,
             'Delta': winter_delta
         }
-
+        print(data_avg_expected_winter)
 # --------------------------------- AVERAGE EXPECTED AVAILABILITY WINTER PIPELINE --------------------------------- #
 
 # --------------------------------- VISUALIZE --------------------------------- #
@@ -737,23 +743,23 @@ def run_app():
         st.write(f"Graph 1. {start_date} to {end_date}")
         st.line_chart(combined_df)
 
-        # Set Nucmonitor as a dotted line until the current date
+        # # Set Nucmonitor as a dotted line until the current date
 
-        fig, ax = plt.subplots(figsize=(10, 6))
+        # fig, ax = plt.subplots(figsize=(10, 6))
 
-        plt.plot(combined_df.index, combined_df[f'Forecast {current_date_str}'], 'r--', label=f'Forecast {current_date_str}')
-        plt.plot(combined_df.index, combined_df[f'Forecast {past_date_str}'], 'b-', label=f'Forecast {past_date_str}')
+        # plt.plot(combined_df.index, combined_df[f'Forecast {current_date_str}'], 'r--', label=f'Forecast {current_date_str}')
+        # plt.plot(combined_df.index, combined_df[f'Forecast {past_date_str}'], 'b-', label=f'Forecast {past_date_str}')
 
-        plt.axvline(current_date_str, color='k', linestyle='--', linewidth=1, label='Current Date')
+        # plt.axvline(current_date_str, color='k', linestyle='--', linewidth=1, label='Current Date')
 
-        # Set the x-axis to show only the first day of every month
-        ax.xaxis.set_major_locator(MonthLocator(bymonthday=1))
+        # # Set the x-axis to show only the first day of every month
+        # ax.xaxis.set_major_locator(MonthLocator(bymonthday=1))
 
-        plt.legend()
+        # plt.legend()
 
-        plt.xticks(rotation=45)
+        # plt.xticks(rotation=45)
 
-        st.pyplot(fig)
+        # st.pyplot(fig)
 
         # For Historical Winter Availability, can just get the max and min of each month, store as list in a column, and try to graph that
 
@@ -774,7 +780,7 @@ def run_app():
 
 
         # Save the DataFrame to the BytesIO object as an Excel file
-        df_nucmonitor_2.to_excel(excel_buffer, index=True)
+        df_nucmonitor.to_excel(excel_buffer, index=True)
         # Set the cursor position to the beginning of the BytesIO object
         excel_buffer.seek(0)
 
