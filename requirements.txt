@@ -7,3 +7,4 @@ pandas
 pymongo
 Requests
 streamlit
+openpyxl
