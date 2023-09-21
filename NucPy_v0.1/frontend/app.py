@@ -615,7 +615,7 @@ def run_app():
         print(monthly_average_nucmonitor)
         print(monthly_average_nucmonitor.index)
         print(len(monthly_average_nucmonitor.index) < 5)
-        if len(monthly_average_nucmonitor.index) < 5 or two_months_before not in monthly_average_nucmonitor.index:
+        if (len(monthly_average_nucmonitor.index) < 5) or (two_months_before not in monthly_average_nucmonitor.index or two_months_after not in monthly_average_nucmonitor.index):
             df_display_normal_bool = False
 
         else:
@@ -671,8 +671,8 @@ def run_app():
         # included will only be 20xx-11, 12, and 20xx+1-01, 02, 03
         
         # Define date ranges for winter months
-        winter_start_date = current_date.replace(month=11, day=1)
-        winter_end_date = (current_date.replace(year=current_date.year+1, month=3, day=31))
+        # winter_start_date = current_date.replace(month=11, day=1)
+        # winter_end_date = (current_date.replace(year=current_date.year+1, month=3, day=31))
         winter_start = f"{current_date.year}-11"
         winter_end = f"{current_date.year+1}-03"
         winter_start_str = str(winter_start)
@@ -682,7 +682,7 @@ def run_app():
         print("monthly_average_nucmonitor.index", monthly_average_nucmonitor.index)
         print(monthly_average_nucmonitor.index == winter_start)
         print(monthly_average_nucmonitor.index == winter_end)
-        if monthly_average_nucmonitor.index.any() != winter_start or monthly_average_nucmonitor.index.an() != winter_end:
+        if monthly_average_nucmonitor.index.any() != winter_start or monthly_average_nucmonitor.index.any() != winter_end:
             df_display_winter_bool = False
 
         else:
