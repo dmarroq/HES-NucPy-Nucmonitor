@@ -129,12 +129,12 @@ def get_unavailabilities(usr_start_date, usr_end_date):
     # Current year/month/day/hour/minute/second is calculated for the last call to the API. For instance, if today is 05/05/2023,
     # the last call of the API will be from 01/05/2023 to 05/05/2023 (+current hour,minute,second). 
     current_datetime = datetime.datetime.now()
-    current_year = current_datetime.strftime('%Y')
-    current_month = current_datetime.strftime('%m')
-    current_day = current_datetime.strftime('%d')
-    current_hour = current_datetime.strftime('%H')
-    current_minute = current_datetime.strftime('%M')
-    current_second = current_datetime.strftime('%S')
+    # current_year = current_datetime.strftime('%Y')
+    # current_month = current_datetime.strftime('%m')
+    # current_day = current_datetime.strftime('%d')
+    # current_hour = current_datetime.strftime('%H')
+    # current_minute = current_datetime.strftime('%M')
+    # current_second = current_datetime.strftime('%S')
     
     # Headers for the HTTP request
     headers = {'Host': 'digital.iservices.rte-france.com',
@@ -343,6 +343,13 @@ def nuc_monitor(usr_start_date, usr_end_date, past_date, mongo_db_data, rte_data
     # This filter should take all the dates with unavs that include days with unavs in the range of the start and end date
 
     filtered_df = filtered_id_df.copy()[(filtered_id_df.copy()['start_date'] <= end_date_str) & (filtered_id_df.copy()['end_date'] >= start_date_str)]
+    # Create a boolean mask to identify rows where status is "Dismissed"
+    mask = filtered_df["status"] == "DISMISSED"
+    print(filtered_df["status"])
+    print(filtered_df[mask])
+
+    # Update available_capacity where the condition is True
+    filtered_df.loc[mask, "available_capacity"] = filtered_df.loc[mask, "installed_capacity"]
 
     # Standardize datetime in dataframe
     filtered_df2 = filtered_df.copy() # This code will just standardize datetime stuff
@@ -536,13 +543,13 @@ def run_app():
     # winter_date = st.date_input("Winter Cutoff Date")
 
     current_date = datetime.datetime.now()
-
+    
     with st.form("nucmonitor_form"):
         submitted = st.form_submit_button("Get Nucmonitor")
 
     if not submitted:
         st.write("Form not submitted")
-
+    
     else:
         st.write("Data received from Flask:")
         df_nucmonitor = get_nucmonitor_data(start_date, end_date, current_date)
