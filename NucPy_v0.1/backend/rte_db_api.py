@@ -10,7 +10,6 @@ import pymongo
 from mongoengine import StringField, ListField, DateTimeField, DictField
 import pandas as pd
 
-
 # --------------------------------------------------------------------------------------- #
 
 # Store normal size data
@@ -130,7 +129,8 @@ def call_and_store():
 # Schedule the function to run at 00:05
 schedule.every().day.at("00:05").do(call_and_store)  # Adjust the time as needed
 
-# Run the scheduling loop
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+if __name__ == '__main__':
+    # Run the scheduling loop
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
