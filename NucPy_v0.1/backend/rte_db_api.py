@@ -10,6 +10,7 @@ import pymongo
 from mongoengine import StringField, ListField, DateTimeField, DictField
 import pandas as pd
 
+
 # --------------------------------------------------------------------------------------- #
 
 # Store normal size data
@@ -119,6 +120,7 @@ def get_unavailabilities(oauth):
     collection_name = "unavs_update"
     mongo_store_data(responses, database_name, collection_name)
     print(f"Data stored in database {database_name} in collection {collection_name}")
+
     return
 
 # Function to call get_unavailabilities and store the data
@@ -127,7 +129,7 @@ def call_and_store():
     get_unavailabilities(oauth)
 
 # Schedule the function to run at 00:05
-schedule.every().day.at("00:05").do(call_and_store)  # Adjust the time as needed
+schedule.every().day.at("16:27").do(call_and_store)  # Adjust the time as needed
 
 if __name__ == '__main__':
     # Run the scheduling loop
