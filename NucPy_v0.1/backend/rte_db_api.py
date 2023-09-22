@@ -77,7 +77,6 @@ def get_unavailabilities(oauth):
     # unav_status = ['ACTIVE', 'INACTIVE']
     # This could also be changed. Currently it means that if we call the API with start_date=01/01/2023 and end_date=01/02/2023,
     # it will return all the records of unavailabilities that have been updated between the two dates.
-    # date_type = 'UPDATED_DATE'
     # date_type APPLICATION_DATE gets all unavailabilities with predictions in the defined dates, so that 
     # we can get an unavailability that has updated_date outside the defined dates for start_date and end_date
     date_type = 'UPDATED_DATE'
@@ -128,8 +127,8 @@ def call_and_store():
     oauth = get_oauth()
     get_unavailabilities(oauth)
 
-# Schedule the function to run at 13:00
-schedule.every().day.at("13:22").do(call_and_store)  # Adjust the time as needed
+# Schedule the function to run at 00:05
+schedule.every().day.at("00:05").do(call_and_store)  # Adjust the time as needed
 
 # Run the scheduling loop
 while True:
