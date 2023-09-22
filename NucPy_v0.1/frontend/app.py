@@ -24,7 +24,7 @@ def mongo_unavs_call(user_input_start_date, user_input_end_date, user_input_past
     passw = "tN9XpCCQM2MtYDme"
     host = "nucmonitordata.xxcwx9k.mongodb.net"
     client = pymongo.MongoClient(
-        f"mongodb+srv://{user}:{passw}@{host}/?retryWrites=true&w=majority"
+        f"mongodb+srv://{user}:{passw}@{host}/?retryWrites=true&w=majority&connectTimeoutMS=5000"
     )
 
     db = client["data"]
