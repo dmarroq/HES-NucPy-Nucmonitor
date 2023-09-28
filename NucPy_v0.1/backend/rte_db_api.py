@@ -134,5 +134,27 @@ schedule.every().day.at("16:27").do(call_and_store)  # Adjust the time as needed
 if __name__ == '__main__':
     # Run the scheduling loop
     while True:
-        schedule.run_pending()
+        # schedule.run_pending()
+        # Get the current date and time
+        current_time = datetime.datetime.now().time()
+
+        # Extract the hour and minute components
+        hour = current_time.hour
+        minute = current_time.minute
+        # Combine hour and minute into a single variable as a string
+        second = current_time.second
+        
+        # Print the current time in hh:mm format
+        # print(f"The current time is: {hour:02d}:{minute:02d}:{second:02d}")
+        
+
+        # Combine hour, minute, and millisecond into a single variable as a string
+        time_combined = f"{hour:02d}:{minute:02d}:{second:02d}"
+        scheduled_time ="09:45:00"
+        if time_combined == scheduled_time:
+            print("Beginning function:")
+            call_and_store()
+        else:
+            continue
+        
         time.sleep(1)
